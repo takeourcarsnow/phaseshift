@@ -1,0 +1,11 @@
+{
+  "name": "interactive-grid",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "serve public",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+} 
