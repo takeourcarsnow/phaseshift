@@ -33,12 +33,12 @@ canvas {
     gap: 10px;
 }
 #controls.collapsed {
-    transform: translateX(300px);
+    transform: translateX(100%);
 }
 #controls-toggle {
     position: absolute;
     top: 20px;
-    left: 0;
+    right: 5px;
     background: #444;
     color: #f0f0f0;
     border: none;
@@ -47,10 +47,10 @@ canvas {
     cursor: pointer;
     z-index: 11;
     font-size: 1.2em;
-    transition: left 0.3s ease-in-out;
+    transition: right 0.3s ease-in-out;
 }
 #controls.collapsed ~ #controls-toggle {
-    left: 300px;
+    right: -20px;
 }
 #controls summary {
     font-size: 1.1em;
