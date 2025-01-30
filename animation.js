@@ -591,4 +591,59 @@ waveCountInput.addEventListener('input', () => {
 });
 
 // Initial call to generate thickness controls
-generateThicknessControls(); 
+generateThicknessControls();
+
+// Add to animation.js
+document.getElementById('fullscreen-toggle').addEventListener('click', toggleFullscreen);
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        // Request fullscreen
+        if (canvas.requestFullscreen) {
+            canvas.requestFullscreen().catch(err => {
+                console.error('Error attempting to enable fullscreen:', err);
+            });
+        } else if (canvas.webkitRequestFullscreen) { /* Safari */
+            canvas.webkitRequestFullscreen();
+        } else if (canvas.msRequestFullscreen) { /* IE11 */
+            canvas.msRequestFullscreen();
+        }
+    } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+}
+
+// Update the resize handler to handle fullscreen changes
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    createGrid();
+    createWaves();
+}
+
+// Add fullscreen change listener
+document.addEventListener('fullscreenchange', () => {
+    resizeCanvas();
+    updateFullscreenButton();
+});
+
+// Update button icon
+document.addEventListener('fullscreenchange', updateFullscreenButton);
+document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+document.addEventListener('msfullscreenchange', updateFullscreenButton);
+
+function updateFullscreenButton() {
+    const button = document.getElementById('fullscreen-toggle');
+    if (document.fullscreenElement) {
+        button.innerHTML = '<i class="fas fa-compress"></i>';
+    } else {
+        button.innerHTML = '<i class="fas fa-expand"></i>';
+    }
+} 
