@@ -31,6 +31,9 @@ let waveLayers = [];
 let mouseTrail = [];
 const trailLength = 20;
 
+let menuOpen = false;
+let lastOrientation = window.orientation;
+
 // Get control elements
 const gridSizeInput = document.getElementById('gridSize');
 const lineStrengthInput = document.getElementById('lineStrength');
@@ -516,4 +519,18 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 createGrid();
 createWaves();
-animate(); 
+animate();
+
+function toggleMenu() {
+    menuOpen = !menuOpen;
+    document.querySelector('.menu').classList.toggle('active');
+    
+    // Check if orientation changed since last toggle
+    if (Math.abs(window.orientation - lastOrientation) === 90) {
+        handleResize();
+        lastOrientation = window.orientation;
+    }
+    
+    // Force reflow to prevent rendering issues
+    void document.querySelector('.menu').offsetWidth;
+} 

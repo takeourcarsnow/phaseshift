@@ -410,4 +410,24 @@ function drawWaves(time) {
     for (let layer of waveLayers) {
         layer.draw(time);
     }
-} 
+}
+
+function handleResize() {
+  // Add slight delay to ensure proper dimensions
+  setTimeout(() => {
+    canvas.width = Math.min(window.innerWidth, 1920);
+    canvas.height = window.innerHeight;
+    
+    // If menu is closed, maintain aspect ratio
+    if (!menuOpen) {
+      const aspectRatio = 16 / 9;
+      canvas.width = Math.min(window.innerWidth, 1920);
+      canvas.height = canvas.width / aspectRatio;
+    }
+    
+    initWave(); // Reinitialize wave parameters
+  }, 100);
+}
+
+// Add orientationchange listener
+window.addEventListener('orientationchange', handleResize); 

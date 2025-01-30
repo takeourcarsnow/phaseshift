@@ -177,4 +177,26 @@ canvas {
     cursor: pointer;
     font-size: 1em;
     margin-top: 5px;
+}
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+  
+  .menu-toggle {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media screen and (max-width: 768px) and (orientation: landscape) {
+  canvas {
+    width: 100vw !important;
+    height: 90vh !important;
+  }
+  
+  .menu {
+    width: 300px;
+  }
 } 
