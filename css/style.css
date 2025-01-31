@@ -1,0 +1,247 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    font-family: sans-serif;
+}
+canvas {
+    display: block;
+}
+#controls-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    z-index: 10;
+    display: flex;
+}
+#controls {
+    background: rgba(30, 30, 30, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    overflow-y: auto;
+    max-height: 100%;
+    width: 300px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(0);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#controls.collapsed {
+    transform: translateX(100%);
+}
+#controls-toggle {
+    position: absolute;
+    top: 20px;
+    right: 5px;
+    background: #444;
+    color: #f0f0f0;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 11;
+    font-size: 1.2em;
+    transition: right 0.3s ease-in-out;
+}
+#controls.collapsed ~ #controls-toggle {
+    right: -20px;
+}
+#controls summary {
+    font-size: 1.1em;
+    color: #ddd;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#controls summary::-webkit-details-marker {
+    display: none;
+}
+#controls summary::before {
+    content: '\f0da';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 5px;
+    transition: transform 0.3s ease-in-out;
+}
+#controls details[open] > summary::before {
+    transform: rotate(90deg);
+}
+.controls-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 5px;
+}
+.control-group {
+    padding: 8px;
+    background: rgba(40, 40, 40, 0.9);
+    border-radius: 4px;
+    margin: 4px 0;
+    
+    label {
+        font-size: 0.9em;
+        display: block;
+        margin-bottom: 4px;
+    }
+    
+    input[type="range"] {
+        width: 100%;
+        margin: 4px 0;
+    }
+}
+.control-group.hidden {
+    display: none;
+}
+.control-group input[type="range"],
+.control-group input[type="color"],
+.control-group select {
+    width: 100%;
+    background-color: #444;
+    border-radius: 5px;
+    outline: none;
+    padding: 5px;
+    border: none;
+    color: #f0f0f0;
+}
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #ddd;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.control-group input[type="color"] {
+    height: 25px;
+}
+.control-group select {
+    height: 30px;
+}
+.radio-group {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.radio-group label {
+    font-size: 0.9em;
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.radio-group input[type="radio"] {
+    margin: 0;
+}
+.radio-group input[type="color"] {
+    margin-left: 5px;
+    vertical-align: middle;
+    height: 25px;
+    width: 30px;
+    padding: 2px;
+}
+#background-options {
+    margin-top: 2px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+}
+#background-options label {
+    font-size: 0.9em;
+    color: #ddd;
+    display: flex;
+    align-items: center;
+}
+#background-options input[type="color"] {
+    width: 100%;
+    height: 25px;
+    border: none;
+    background-color: #444;
+}
+#background-options input[type="file"] {
+    display: none;
+}
+#background-options button {
+    background-color: #444;
+    color: #f0f0f0;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+#clearButton, #randomButton, #defaultButton {
+    background-color: #444;
+    color: #f0f0f0;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 5px;
+}
+@media screen and (max-width: 768px) {
+    #controls {
+        width: 90vw;
+        padding: 8px;
+    }
+
+    #controls-toggle {
+        top: 10px;
+        right: 10px;
+        font-size: 1em;
+    }
+
+    canvas {
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+
+    .control-group {
+        padding: 6px;
+        
+        label {
+            font-size: 0.8em;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #controls {
+        width: 90%;
+        max-height: 80vh;
+    }
+
+    #controls-toggle {
+        top: 5px;
+        right: 5px;
+        padding: 6px 10px;
+    }
+
+    .control-group label {
+        font-size: 0.8em;
+    }
+
+    .radio-group label {
+        font-size: 0.8em;
+    }
+}
+
+@media screen and (orientation: landscape) and (max-width: 768px) {
+    #controls {
+        max-height: 70vh;
+    }
+
+    canvas {
+        height: 90vh !important;
+    }
+} 
