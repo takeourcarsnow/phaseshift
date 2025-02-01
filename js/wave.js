@@ -424,8 +424,12 @@ function createWaves() {
     const numLayers = settings.waveCount;
     const layerSpacing = settings.waveSpacing;
     
-    // Create layers from top to bottom with consistent spacing
-    const startY = (canvas.height - (numLayers - 1) * layerSpacing) / 2;
+    // Get actual visible area dimensions
+    const rect = canvas.getBoundingClientRect();
+    const visibleHeight = rect.height;
+    
+    // Calculate center based on visible area
+    const startY = (visibleHeight - (numLayers - 1) * layerSpacing) / 2 + rect.top;
     
     for (let i = 0; i < numLayers; i++) {
         const y = startY + (i * layerSpacing);

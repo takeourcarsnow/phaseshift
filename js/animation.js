@@ -1,3 +1,27 @@
+// Remove the existing throttle declaration and replace with:
+if (typeof window.throttle === 'undefined') {
+    window.throttle = (func, limit) => {
+        let lastFunc;
+        let lastRan;
+        return function() {
+            const context = this;
+            const args = arguments;
+            if (!lastRan) {
+                func.apply(context, args);
+                lastRan = Date.now();
+            } else {
+                clearTimeout(lastFunc);
+                lastFunc = setTimeout(function() {
+                    if ((Date.now() - lastRan) >= limit) {
+                        func.apply(context, args);
+                        lastRan = Date.now();
+                    }
+                }, limit - (Date.now() - lastRan));
+            }
+        };
+    };
+}
+
 // Update value displays
 gridSizeInput.addEventListener('input', (e) => {
     const rawValue = parseFloat(e.target.value);
@@ -117,14 +141,6 @@ waveSpacingInput.addEventListener('input', (e) => {
     document.getElementById('waveSpacingValue').textContent = Math.round(scaledValue);
     settings.waveSpacing = Math.round(scaledValue);
     createWaves();
-});
-
-const turbulenceInput = document.getElementById('turbulence');
-
-// Add to existing event listeners
-turbulenceInput.addEventListener('input', (e) => {
-    document.getElementById('turbulenceValue').textContent = e.target.value;
-    settings.turbulence = parseFloat(e.target.value);
 });
 
 // Replace the existing dropdown event listener
@@ -573,7 +589,7 @@ const inputHandler = (e) => {
     }
 };
 
-const throttledRedraw = throttle(() => {
+const throttledRedraw = window.throttle(() => {
     createGrid();
     createWaves();
 }, 100);
