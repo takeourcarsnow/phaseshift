@@ -173,9 +173,8 @@ class WavePoint {
         if (settings.waveShape === 'sine') {
             idealY += Math.sin(finalPhase) * waveHeight;
         } else if (settings.waveShape === 'sawtooth') {
-            // Phase-correct sawtooth with proper negative value handling
             const phase = ((finalPhase % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
-            idealY += (phase / Math.PI - 1) * waveHeight * 0.5;
+            idealY += (1 - (phase / Math.PI)) * waveHeight;
         } else if (settings.waveShape === 'square') {
             idealY += (Math.sin(finalPhase) > 0 ? waveHeight : -waveHeight);
         } else if (settings.waveShape === 'triangle') {
