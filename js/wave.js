@@ -264,13 +264,25 @@ class WavePoint {
 
 class WaveLayer {
     constructor(y, offset, index) {
-        this.y = y;
+        this.baseY = y; // Store base position
         this.offset = offset;
         this.points = this.createPoints();
         this.index = index;
         this.hue = (this.index * 20) % 360;
-        this.history = []; // Store previous positions for echo effect
-        this.maxHistory = 20; // Number of echo layers to keep
+        this.history = [];
+        this.maxHistory = 20;
+    }
+
+    // Add method to update position smoothly
+    updatePosition(newY) {
+        const deltaY = newY - this.baseY;
+        this.baseY = newY;
+        
+        // Move existing points instead of recreating
+        this.points.forEach(point => {
+            point.originalY += deltaY;
+            point.y += deltaY;
+        });
     }
 
     createPoints() {
@@ -281,9 +293,7 @@ class WaveLayer {
         
         for (let i = 0; i < numPoints; i++) {
             const x = startX + (i * (length / numPoints));
-            // Use the layer's Y position instead of viewport center
-            const y = this.y;
-            points.push(new WavePoint(x, y, this.offset));
+            points.push(new WavePoint(x, this.baseY, this.offset));
         }
         return points;
     }
@@ -466,17 +476,34 @@ class WaveLayer {
 let waveLayers = [];
 
 function createWaves() {
-    waveLayers = [];
     const numLayers = settings.waveCount;
     const layerSpacing = settings.waveSpacing;
-    
-    // Calculate vertical positions with direct spacing
     const startY = (window.innerHeight - (numLayers - 1) * layerSpacing) / 2;
-    
-    for (let i = 0; i < numLayers; i++) {
-        const y = startY + (i * layerSpacing);
-        const offset = (i + 1) * 0.5;
-        waveLayers.push(new WaveLayer(y, offset, i + 1));
+
+    // Update existing layers instead of recreating
+    if (waveLayers.length > 0) {
+        // Match number of layers
+        while (waveLayers.length > numLayers) {
+            waveLayers.pop();
+        }
+        while (waveLayers.length < numLayers) {
+            const y = startY + (waveLayers.length * layerSpacing);
+            waveLayers.push(new WaveLayer(y, (waveLayers.length + 1) * 0.5, waveLayers.length + 1));
+        }
+
+        // Update positions of existing layers
+        waveLayers.forEach((layer, index) => {
+            const targetY = startY + (index * layerSpacing);
+            if (Math.abs(layer.baseY - targetY) > 1) {
+                layer.updatePosition(targetY);
+            }
+        });
+    } else {
+        // Initial creation
+        for (let i = 0; i < numLayers; i++) {
+            const y = startY + (i * layerSpacing);
+            waveLayers.push(new WaveLayer(y, (i + 1) * 0.5, i + 1));
+        }
     }
 }
 

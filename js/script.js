@@ -4,9 +4,6 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Add this at the start of the script, before settings initialization
-const isPortrait = window.matchMedia("(orientation: portrait)").matches;
-
 // Settings with default values
 let settings = {
     gridSize: 50,
@@ -25,7 +22,7 @@ let settings = {
     waveCount: 10,
     waveShape: 'sine',
     interactionStrength: 0.5,
-    waveRotation: isPortrait ? 90 : 0, // Set initial rotation based on orientation
+    waveRotation: 0
 };
 
 let mouse = { x: -1000, y: -1000, smoothX: -1000, smoothY: -1000, vx: 0, vy: 0 };
@@ -62,6 +59,19 @@ const colorModeInputs = document.querySelectorAll('input[name="colorMode"]');
 const interactionModeInputs = document.querySelectorAll('input[name="interactionMode"]');
 const waveShapeInputs = document.querySelectorAll('input[name="waveShape"]');
 const displayModeInputs = document.querySelectorAll('input[name="displayMode"]');
+
+// Add wave rotation input with snapping
+const waveRotationInput = document.getElementById('waveRotation');
+waveRotationInput.addEventListener('input', (e) => {
+    // Snap to nearest 15 degrees
+    const value = Math.round(e.target.value / 15) * 15;
+    e.target.value = value;
+    document.getElementById('waveRotationValue').textContent = value;
+    settings.waveRotation = value;
+});
+
+// Initialize rotation value display
+document.getElementById('waveRotationValue').textContent = waveRotationInput.value;
 
 // Update value displays
 gridSizeInput.addEventListener('input', (e) => {
@@ -170,6 +180,26 @@ displayModeInputs.forEach(input => {
 controlsToggle.addEventListener('click', () => {
     controls.classList.toggle('collapsed');
 });
+
+// Tab functionality
+const tabs = document.querySelectorAll('.tab');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active class from all tabs and hide all contents
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(content => content.style.display = 'none');
+
+        // Add active class to clicked tab and show corresponding content
+        tab.classList.add('active');
+        const target = tab.getAttribute('data-target');
+        document.getElementById(target).style.display = 'block';
+    });
+});
+
+// Set the first tab as active by default
+tabs[0].click();
 
 // Helper function for vector math
 function vec2(x, y) {
@@ -545,34 +575,5 @@ window.addEventListener('keydown', function(event) {
     if (event.key === 'r' || event.key === 'R') {
         // Simulate click on the random button
         document.getElementById('randomButton').click();
-    }
-});
-
-// Add this after settings are initialized
-function updateRotationUI() {
-    const rotationInput = document.getElementById('waveRotation');
-    if (rotationInput) {
-        rotationInput.value = settings.waveRotation;
-        const rotationValue = document.getElementById('waveRotationValue');
-        if (rotationValue) {
-            rotationValue.textContent = settings.waveRotation;
-        }
-    }
-}
-
-// Call this after settings are initialized
-updateRotationUI();
-
-// Add orientation change listener
-window.addEventListener('orientationchange', () => {
-    const isNowPortrait = window.matchMedia("(orientation: portrait)").matches;
-    if (isNowPortrait && settings.waveRotation !== 90) {
-        settings.waveRotation = 90;
-        updateRotationUI();
-        createWaves();
-    } else if (!isNowPortrait && settings.waveRotation !== 0) {
-        settings.waveRotation = 0;
-        updateRotationUI();
-        createWaves();
     }
 }); 

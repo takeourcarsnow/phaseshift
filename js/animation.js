@@ -136,11 +136,19 @@ waveAmplitudeInput.addEventListener('input', (e) => {
 
 waveSpacingInput.addEventListener('input', (e) => {
     const rawValue = parseFloat(e.target.value);
-    // Linear scaling instead of logarithmic for more predictable results
     const scaledValue = 10 + (200 - 10) * (rawValue - 10) / (200 - 10);
     document.getElementById('waveSpacingValue').textContent = Math.round(scaledValue);
     settings.waveSpacing = Math.round(scaledValue);
-    createWaves();
+    
+    // Smooth transition by updating existing waves
+    createWaves(); // Now uses the updated logic that modifies existing layers
+    
+    // Force gradual position updates instead of instant recreation
+    waveLayers.forEach(layer => {
+        layer.points.forEach(point => {
+            point.vy *= 0.9; // Dampen existing velocity
+        });
+    });
 });
 
 // Replace the existing dropdown event listener
