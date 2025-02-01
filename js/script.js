@@ -4,6 +4,9 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Add this at the start of the script, before settings initialization
+const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+
 // Settings with default values
 let settings = {
     gridSize: 50,
@@ -21,7 +24,8 @@ let settings = {
     displayMode: 'waves',
     waveCount: 10,
     waveShape: 'sine',
-    interactionStrength: 0.5
+    interactionStrength: 0.5,
+    waveRotation: isPortrait ? 90 : 0, // Set initial rotation based on orientation
 };
 
 let mouse = { x: -1000, y: -1000, smoothX: -1000, smoothY: -1000, vx: 0, vy: 0 };
@@ -541,5 +545,34 @@ window.addEventListener('keydown', function(event) {
     if (event.key === 'r' || event.key === 'R') {
         // Simulate click on the random button
         document.getElementById('randomButton').click();
+    }
+});
+
+// Add this after settings are initialized
+function updateRotationUI() {
+    const rotationInput = document.getElementById('waveRotation');
+    if (rotationInput) {
+        rotationInput.value = settings.waveRotation;
+        const rotationValue = document.getElementById('waveRotationValue');
+        if (rotationValue) {
+            rotationValue.textContent = settings.waveRotation;
+        }
+    }
+}
+
+// Call this after settings are initialized
+updateRotationUI();
+
+// Add orientation change listener
+window.addEventListener('orientationchange', () => {
+    const isNowPortrait = window.matchMedia("(orientation: portrait)").matches;
+    if (isNowPortrait && settings.waveRotation !== 90) {
+        settings.waveRotation = 90;
+        updateRotationUI();
+        createWaves();
+    } else if (!isNowPortrait && settings.waveRotation !== 0) {
+        settings.waveRotation = 0;
+        updateRotationUI();
+        createWaves();
     }
 }); 
