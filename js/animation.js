@@ -546,21 +546,18 @@ const inputHandler = (e) => {
     const id = target.id;
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
-    console.log(`Input changed: ${id}, Value: ${value}`); // Debugging line
-
     if (id in settings) {
         settings[id] = target.type === 'checkbox' ? value : parseFloat(value);
         
         const valueDisplay = document.getElementById(`${id}Value`);
         if (valueDisplay) {
-            // Update the display for checkbox values
             if (target.type === 'checkbox') {
                 valueDisplay.textContent = value ? 'On' : 'Off';
             } else {
                 valueDisplay.textContent = value;
             }
         } else {
-            console.warn(`Element with id ${id}Value not found`); // Debugging line
+            console.warn(`Element with id ${id}Value not found`);
         }
 
         if (['gridSize', 'waveCount', 'waveSpacing'].includes(id)) {
@@ -574,8 +571,10 @@ const throttledRedraw = window.throttle(() => {
     createWaves();
 }, 100);
 
-document.getElementById('controls').addEventListener('input', inputHandler);
-document.getElementById('controls').addEventListener('change', inputHandler);
+// Cache the controls element for event delegation:
+const controlsElement = document.getElementById('controls');
+controlsElement.addEventListener('input', inputHandler);
+controlsElement.addEventListener('change', inputHandler);
 
 // Add touch-action CSS property to prevent default behaviors
 canvas.style.touchAction = 'none';

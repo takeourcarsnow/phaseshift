@@ -238,59 +238,57 @@ function updateUI() {
     document.getElementById('plexTrailDuration').value = settings.plexTrailDuration;
 }
 
-// Add this function to randomize all settings
+// Add this helper function near the top (e.g. after initial settings definitions)
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+// Update the randomizeSettings function for improved readability:
 function randomizeSettings() {
-    // Keep grid resolution unchanged
-    // settings.gridSize remains as is
+    // Keep grid resolution unchanged (settings.gridSize remains as is)
     
     // Randomize line settings
     settings.lineStrength = Math.random() * 10;
-    settings.lineWidth = Math.floor(Math.random() * 5) + 1;
+    settings.lineWidth = getRandomInt(1, 5);
     settings.lineColor = `#${Math.floor(Math.random()*16777215).toString(16)}`;
-    settings.mouseRadius = Math.floor(Math.random() * 290) + 10;
+    settings.mouseRadius = getRandomInt(10, 300);
     
     // Randomize physics settings
     settings.elasticity = Math.random();
     settings.friction = Math.random();
     settings.positionSpring = Math.random() * 2;
     settings.velocityDamping = Math.random();
-    settings.maxAcceleration = Math.floor(Math.random() * 10) + 1;
+    settings.maxAcceleration = getRandomInt(1, 10);
     
     // Randomize wave settings
-    settings.waveCount = Math.floor(Math.random() * 50) + 1;
+    settings.waveCount = getRandomInt(1, 50);
     settings.waveSpeed = parseFloat((Math.random() * 5).toFixed(1));
-    settings.waveAmplitude = Math.floor(Math.random() * 300) + 1;
-    settings.waveSpacing = Math.floor(Math.random() * 190) + 10;
-    settings.waveRotation = Math.floor(Math.random() * 24) * 15;
+    settings.waveAmplitude = getRandomInt(1, 300);
+    settings.waveSpacing = getRandomInt(10, 200);
+    settings.waveRotation = getRandomInt(0, 23) * 15;
     
     // Randomize wave shape
     const waveShapes = ['sine', 'square', 'triangle', 'sawtooth', 'pulse'];
-    settings.waveShape = waveShapes[Math.floor(Math.random() * waveShapes.length)];
+    settings.waveShape = waveShapes[getRandomInt(0, waveShapes.length - 1)];
     
     // Randomize color mode
     const colorModes = ['custom', 'rainbow', 'velocity'];
-    settings.colorMode = colorModes[Math.floor(Math.random() * colorModes.length)];
+    settings.colorMode = colorModes[getRandomInt(0, colorModes.length - 1)];
     
     // Randomize line style
     const lineStyles = ['solid', 'dashed', 'dotted'];
-    settings.lineStyle = lineStyles[Math.floor(Math.random() * lineStyles.length)];
+    settings.lineStyle = lineStyles[getRandomInt(0, lineStyles.length - 1)];
     
     // Randomize turbulence settings
     const turbulenceTypes = ['sine', 'noise', 'perlin', 'vortex', 'chaos', 'directional', 'random', 'sawtooth', 'pulse'];
-    settings.turbulenceType = turbulenceTypes[Math.floor(Math.random() * turbulenceTypes.length)];
+    settings.turbulenceType = turbulenceTypes[getRandomInt(0, turbulenceTypes.length - 1)];
     settings.turbulence = parseFloat((Math.random() * 2).toFixed(1));
     settings.turbulenceSpeed = parseFloat((Math.random() * 3).toFixed(1));
-    settings.turbulenceScale = Math.floor(Math.random() * 190) + 10;
+    settings.turbulenceScale = getRandomInt(10, 200);
     settings.turbulenceIntensity = parseFloat((Math.random() * 3).toFixed(1));
-    settings.turbulenceDirection = Math.floor(Math.random() * 360);
+    settings.turbulenceDirection = getRandomInt(0, 360);
     
-    // Keep plex and glow effects unchanged
-    // settings.plexEffect remains as is
-    // settings.glowEffect remains as is
-    
-    // Only randomize their intensities
-    settings.plexIntensity = Math.floor(Math.random() * 100);
-    settings.glowIntensity = Math.floor(Math.random() * 100);
+    // Randomize plex and glow intensities; plexEffect and glowEffect remain unchanged
+    settings.plexIntensity = getRandomInt(0, 100);
+    settings.glowIntensity = getRandomInt(0, 100);
     settings.plexTrailDuration = parseFloat((Math.random() * 3).toFixed(1));
     
     // Update UI and redraw
