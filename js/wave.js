@@ -168,17 +168,18 @@ class WavePoint {
             this.vy += unifiedForce;
         }
 
-        let waveHeight = settings.waveAmplitude * 2;
+        let waveHeight = settings.waveAmplitude;
         let idealY = this.originalY;
         if (settings.waveShape === 'sine') {
             idealY += Math.sin(finalPhase) * waveHeight;
+        } else if (settings.waveShape === 'sawtooth') {
+            // Phase-correct sawtooth with proper negative value handling
+            const phase = ((finalPhase % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+            idealY += (phase / Math.PI - 1) * waveHeight * 0.5;
         } else if (settings.waveShape === 'square') {
             idealY += (Math.sin(finalPhase) > 0 ? waveHeight : -waveHeight);
         } else if (settings.waveShape === 'triangle') {
             idealY += (2 * Math.asin(Math.sin(finalPhase)) / Math.PI) * waveHeight;
-        } else if (settings.waveShape === 'sawtooth') {
-            const phase = finalPhase % (2 * Math.PI);
-            idealY += ((phase / Math.PI) - 1) * waveHeight; // Centered sawtooth
         } else if (settings.waveShape === 'pulse') {
             idealY += (Math.sin(finalPhase * 2) > 0 ? waveHeight : -waveHeight);
         }
