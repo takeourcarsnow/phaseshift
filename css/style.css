@@ -19,10 +19,11 @@ canvas {
     position: absolute;
     top: 0;
     right: 0;
-    height: 100%;
+    height: 100vh;
     z-index: 10;
     display: flex;
     pointer-events: none;
+    width: 300px;
 }
 #controls {
     background: rgba(30, 30, 30, 0.9);
@@ -257,4 +258,23 @@ canvas {
 /* Add active state for mobile taps */
 canvas:active {
     cursor: pointer;
+}
+
+/* Add media query for landscape orientation */
+@media screen and (orientation: landscape) {
+    canvas {
+        height: 100vh !important;
+        width: 100vw !important;
+    }
+    
+    #controls.collapsed ~ #controls-toggle {
+        right: -25px;
+    }
+}
+
+/* Ensure controls don't affect layout */
+#controls-container {
+    width: 300px;
+    height: 100vh;
+    pointer-events: none;
 } 

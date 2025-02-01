@@ -327,7 +327,7 @@ canvas.addEventListener('touchmove', (e) => {
 canvas.removeEventListener('pointerdown', handleTouch);
 canvas.removeEventListener('pointermove', (e) => { /* ... */ });
 
-// Update resize handler for proper DPR handling
+// Update resize handler to always fill viewport
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -597,4 +597,13 @@ document.getElementById('controls').addEventListener('input', inputHandler);
 document.getElementById('controls').addEventListener('change', inputHandler);
 
 // Add touch-action CSS property to prevent default behaviors
-canvas.style.touchAction = 'none'; 
+canvas.style.touchAction = 'none';
+
+// Remove aspect ratio constraints from wave.js handleResize
+function handleResize() {
+    setTimeout(() => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        createWaves();
+    }, 100);
+} 

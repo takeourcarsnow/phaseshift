@@ -287,15 +287,33 @@ class WaveLayer {
         // Reset frameAvgY at the start of each frame
         this.points.forEach(p => p.frameAvgY = null);
 
-        const allPoints = this.points; // Get reference to all points
+        const allPoints = this.points;
+
+        // Transform mouse coordinates to account for rotation
+        const transformedMouse = this.rotatePoint(
+            mouse.smoothX, 
+            mouse.smoothY, 
+            -settings.waveRotation
+        );
+
+        const rotatedMouse = {
+            x: transformedMouse.x,
+            y: transformedMouse.y,
+            smoothX: transformedMouse.x,
+            smoothY: transformedMouse.y,
+            vx: mouse.vx,
+            vy: mouse.vy
+        };
+
         for (let i = 0; i < this.points.length; i++) {
             const point = this.points[i];
             const neighbors = [];
             if (i > 0) neighbors.push(this.points[i - 1]);
             if (i < this.points.length - 1) neighbors.push(this.points[i + 1]);
-            point.update(mouse, time, neighbors, allPoints); // Pass allPoints
+            
+            point.update(rotatedMouse, time, neighbors, allPoints);
         }
-        
+
         // Store current positions in history
         const currentPositions = this.points.map(p => p.y);
         this.history.unshift(currentPositions);
@@ -414,6 +432,26 @@ class WaveLayer {
         
         ctx.stroke();
         ctx.restore();
+    }
+
+    rotatePoint(x, y, degrees) {
+        const radians = degrees * (Math.PI / 180);
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Translate to origin
+        const translatedX = x - centerX;
+        const translatedY = y - centerY;
+        
+        // Apply rotation
+        const rotatedX = translatedX * Math.cos(radians) - translatedY * Math.sin(radians);
+        const rotatedY = translatedX * Math.sin(radians) + translatedY * Math.cos(radians);
+        
+        // Translate back
+        return {
+            x: rotatedX + centerX,
+            y: rotatedY + centerY
+        };
     }
 }
 
