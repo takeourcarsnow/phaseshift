@@ -329,7 +329,6 @@ canvas.removeEventListener('pointermove', (e) => { /* ... */ });
 
 // Update resize handler for proper DPR handling
 function resizeCanvas() {
-    // Remove DPR scaling for now to restore functionality
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     createGrid();
