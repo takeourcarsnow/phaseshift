@@ -34,11 +34,6 @@ const settings = {
     turbulenceSpeed: 1,
     turbulenceScale: 50,
     turbulenceComplexity: 1,
-    blendMode: 'source-over',
-    plexEffect: false,
-    plexIntensity: 50,
-    glowEffect: false,
-    glowIntensity: 30,
     damping: 0.1,
     maxForce: 50,
     neighborInfluence: 0.2,
@@ -46,7 +41,13 @@ const settings = {
     velocityDamping: 0.1,
     maxAcceleration: 9,
     waveRotation: 0,
-    globalThickness: 5
+    globalThickness: 5,
+    blendMode: 'source-over',
+    plexEffect: false,
+    plexIntensity: 50,
+    plexTrailDuration: 1.0,
+    glowEffect: false,
+    glowIntensity: 30,
 };
 
 let mouse = { x: -1000, y: -1000, smoothX: -1000, smoothY: -1000, vx: 0, vy: 0 };
@@ -77,4 +78,16 @@ const waveSpacingInput = document.getElementById('waveSpacing');
 const colorModeInputs = document.querySelectorAll('input[name="colorMode"]');
 const interactionModeInputs = document.querySelectorAll('input[name="interactionMode"]');
 const waveShapeInputs = document.querySelectorAll('input[name="waveShape"]');
-const displayModeInputs = document.querySelectorAll('input[name="displayMode"]'); 
+const displayModeInputs = document.querySelectorAll('input[name="displayMode"]');
+
+// Add event listener for blend mode
+const blendModeSelect = document.getElementById('blendMode');
+if (blendModeSelect) {
+    blendModeSelect.addEventListener('change', (e) => {
+        settings.blendMode = e.target.value;
+        // Force redraw
+        const time = performance.now() / 1000;
+        updateWaves(mouse, time);
+        drawWaves(time);
+    });
+} 

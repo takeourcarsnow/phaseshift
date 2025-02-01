@@ -347,31 +347,27 @@ createWaves();
 animate();
 
 // Add new event listeners
-document.getElementById('blendMode').addEventListener('change', (e) => {
-    settings.blendMode = e.target.value;
-});
+// document.getElementById('plexEffect').addEventListener('change', (e) => {
+//     settings.plexEffect = e.target.checked;
+// });
 
-document.getElementById('plexEffect').addEventListener('change', (e) => {
-    settings.plexEffect = e.target.checked;
-});
+// document.getElementById('plexIntensity').addEventListener('input', (e) => {
+//     document.getElementById('plexIntensityValue').textContent = e.target.value;
+//     settings.plexIntensity = parseInt(e.target.value);
+//     waveLayers.forEach(layer => {
+//         layer.history = [];
+//         layer.maxHistory = Math.min(15, 10 + Math.floor(settings.plexIntensity/10)); // Limit to 15 max
+//     });
+// });
 
-document.getElementById('plexIntensity').addEventListener('input', (e) => {
-    document.getElementById('plexIntensityValue').textContent = e.target.value;
-    settings.plexIntensity = parseInt(e.target.value);
-    waveLayers.forEach(layer => {
-        layer.history = [];
-        layer.maxHistory = Math.min(15, 10 + Math.floor(settings.plexIntensity/10)); // Limit to 15 max
-    });
-});
+// document.getElementById('glowEffect').addEventListener('change', (e) => {
+//     settings.glowEffect = e.target.checked;
+// });
 
-document.getElementById('glowEffect').addEventListener('change', (e) => {
-    settings.glowEffect = e.target.checked;
-});
-
-document.getElementById('glowIntensity').addEventListener('input', (e) => {
-    document.getElementById('glowIntensityValue').textContent = e.target.value;
-    settings.glowIntensity = parseInt(e.target.value);
-});
+// document.getElementById('glowIntensity').addEventListener('input', (e) => {
+//     document.getElementById('glowIntensityValue').textContent = e.target.value;
+//     settings.glowIntensity = parseInt(e.target.value);
+// });
 
 // Add to existing event listeners
 document.getElementById('positionSpring').addEventListener('input', (e) => {
@@ -529,16 +525,8 @@ function updateLineStyleVisibility() {
 }
 
 function updateControlVisibility() {
-    const glowIntensityParent = document.getElementById('glowIntensity')?.parentElement;
-    const plexIntensityParent = document.getElementById('plexIntensity')?.parentElement;
     const uploadButtonParent = document.getElementById('uploadButton')?.parentElement;
 
-    if (glowIntensityParent) {
-        glowIntensityParent.classList.toggle('hidden', !settings.glowEffect);
-    }
-    if (plexIntensityParent) {
-        plexIntensityParent.classList.toggle('hidden', !settings.plexEffect);
-    }
     if (uploadButtonParent) {
         uploadButtonParent.classList.toggle('hidden', !!settings.backgroundImage);
     }
@@ -582,11 +570,24 @@ const inputHandler = (e) => {
     const target = e.target;
     const id = target.id;
     const value = target.type === 'checkbox' ? target.checked : target.value;
-    
+
+    console.log(`Input changed: ${id}, Value: ${value}`); // Debugging line
+
     if (id in settings) {
-        settings[id] = parseFloat(value);
-        document.getElementById(`${id}Value`).textContent = value;
+        settings[id] = target.type === 'checkbox' ? value : parseFloat(value);
         
+        const valueDisplay = document.getElementById(`${id}Value`);
+        if (valueDisplay) {
+            // Update the display for checkbox values
+            if (target.type === 'checkbox') {
+                valueDisplay.textContent = value ? 'On' : 'Off';
+            } else {
+                valueDisplay.textContent = value;
+            }
+        } else {
+            console.warn(`Element with id ${id}Value not found`); // Debugging line
+        }
+
         if (['gridSize', 'waveCount', 'waveSpacing'].includes(id)) {
             throttledRedraw();
         }
@@ -611,4 +612,26 @@ function handleResize() {
         canvas.height = window.innerHeight;
         createWaves();
     }, 100);
-} 
+}
+
+// Add event listeners for plex and glow effects
+document.getElementById('plexEffect').addEventListener('change', (e) => {
+    settings.plexEffect = e.target.checked;
+});
+
+document.getElementById('plexIntensity').addEventListener('input', (e) => {
+    settings.plexIntensity = parseInt(e.target.value);
+});
+
+document.getElementById('glowEffect').addEventListener('change', (e) => {
+    settings.glowEffect = e.target.checked;
+});
+
+document.getElementById('glowIntensity').addEventListener('input', (e) => {
+    settings.glowIntensity = parseInt(e.target.value);
+});
+
+document.getElementById('plexTrailDuration').addEventListener('input', (e) => {
+    settings.plexTrailDuration = parseFloat(e.target.value);
+    document.getElementById('plexTrailDurationValue').textContent = e.target.value;
+}); 

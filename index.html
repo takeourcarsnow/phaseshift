@@ -174,30 +174,6 @@
                 <summary><i class="fas fa-magic"></i> Visuals</summary>
                 <div class="controls-grid">
                     <div class="control-group">
-                        <label for="blendMode" title="Blend mode for visual effects">Blend Mode:</label>
-                        <select id="blendMode">
-                            <option value="source-over">Normal</option>
-                            <option value="screen">Screen</option>
-                            <option value="multiply">Multiply</option>
-                            <option value="overlay">Overlay</option>
-                            <option value="lighten">Lighten</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label><input type="checkbox" id="plexEffect" title="Enable trail effect"> Enable Trail Effect</label>
-                    </div>
-                    <div class="control-group">
-                        <label for="plexIntensity" title="Intensity of the trail effect">Trail Intensity: <span id="plexIntensityValue">50</span></label>
-                        <input type="range" id="plexIntensity" min="1" max="100" value="50">
-                    </div>
-                    <div class="control-group">
-                        <label><input type="checkbox" id="glowEffect" title="Enable glow effect"> Enable Glow</label>
-                    </div>
-                    <div class="control-group">
-                        <label for="glowIntensity" title="Intensity of the glow effect">Glow Strength: <span id="glowIntensityValue">30</span></label>
-                        <input type="range" id="glowIntensity" min="0" max="100" value="30">
-                    </div>
-                    <div class="control-group">
                         <label><i class="fas fa-save"></i> Presets</label>
                         <div class="preset-controls">
                             <select id="presetSelect">
@@ -217,6 +193,49 @@
                     <div class="control-group">
                         <label for="globalThickness">Line Thickness: <span id="globalThicknessValue">5</span></label>
                         <input type="range" id="globalThickness" min="1" max="10" value="5">
+                    </div>
+                    <div class="control-group">
+                        <label for="blendMode" title="Canvas blend mode">Blend Mode:</label>
+                        <select id="blendMode">
+                            <option value="source-over">Normal</option>
+                            <option value="multiply">Multiply</option>
+                            <option value="screen">Screen</option>
+                            <option value="overlay">Overlay</option>
+                            <option value="darken">Darken</option>
+                            <option value="lighten">Lighten</option>
+                            <option value="color-dodge">Color Dodge</option>
+                            <option value="color-burn">Color Burn</option>
+                            <option value="hard-light">Hard Light</option>
+                            <option value="soft-light">Soft Light</option>
+                             <option value="difference">Difference</option>
+                            <option value="exclusion">Exclusion</option>
+                            <option value="hue">Hue</option>
+                            <option value="saturation">Saturation</option>
+                            <option value="color">Color</option>
+                            <option value="luminosity">Luminosity</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="plexEffect">Enable Plex Effect:</label>
+                        <input type="checkbox" id="plexEffect">
+                        <span id="plexEffectValue">Off</span>
+                    </div>
+                    <div class="control-group">
+                        <label for="plexIntensity">Plex Intensity: <span id="plexIntensityValue">50</span></label>
+                        <input type="range" id="plexIntensity" min="0" max="100" value="50">
+                    </div>
+                    <div class="control-group">
+                        <label for="glowEffect">Enable Glow Effect:</label>
+                        <input type="checkbox" id="glowEffect">
+                        <span id="glowEffectValue">Off</span>
+                    </div>
+                    <div class="control-group">
+                        <label for="glowIntensity">Glow Intensity: <span id="glowIntensityValue">30</span></label>
+                        <input type="range" id="glowIntensity" min="0" max="100" value="30">
+                    </div>
+                    <div class="control-group">
+                        <label for="plexTrailDuration">Plex Trail Duration: <span id="plexTrailDurationValue">1.0</span></label>
+                        <input type="range" id="plexTrailDuration" min="0.1" max="3.0" step="0.1" value="1.0">
                     </div>
                 </div>
             </details>

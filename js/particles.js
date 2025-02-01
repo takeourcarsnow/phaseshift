@@ -37,7 +37,5 @@ function updateParticles() {
 }
 
 function drawParticles() {
-    ctx.globalCompositeOperation = 'lighter';
     particles.forEach(p => p.draw());
-    ctx.globalCompositeOperation = settings.blendMode;
 } 

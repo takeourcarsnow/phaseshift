@@ -324,36 +324,33 @@ class WaveLayer {
     }
 
     draw(time) {
+        ctx.globalCompositeOperation = settings.blendMode;
         ctx.save();
-        // Center in viewport and rotate
-        ctx.translate(window.innerWidth/2, window.innerHeight/2);
+        ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
         ctx.rotate((settings.waveRotation * Math.PI) / 180);
-        
-        // Draw wave normally without scaling
-        ctx.translate(-window.innerWidth/2, -window.innerHeight/2);
+        ctx.translate(-window.innerWidth / 2, -window.innerHeight / 2);
 
         // Draw echo effect first
         if (settings.plexEffect) {
             ctx.globalCompositeOperation = 'screen';
-            // Adjust maxHistory calculation to work for all line thicknesses
-            const maxHistory = Math.max(5, Math.floor(20 / Math.sqrt(settings.globalThickness || 1)));
+            // Use plexTrailDuration to calculate the number of history points
+            const maxHistory = Math.min(20, Math.floor(20 * settings.plexTrailDuration));
             for (let i = 0; i < Math.min(this.history.length, maxHistory); i += 1) {
                 const positions = this.history[i];
-                const alpha = (1 - (i/this.history.length)) * 0.5 * (settings.plexIntensity/100);
-                const spread = i * 0.2 * (settings.plexIntensity/100);
-                
+                const alpha = (1 - (i / this.history.length)) * 0.5 * (settings.plexIntensity / 100);
+                const spread = i * 0.2 * (settings.plexIntensity / 100);
+
                 ctx.beginPath();
                 ctx.moveTo(this.points[0].x, positions[0] + spread);
-                // Draw with reduced resolution
                 for (let j = 0; j < positions.length - 1; j += 2) {
                     const x = this.points[j].x;
                     const y = positions[j] + spread;
-                    const nextX = this.points[j+1].x;
-                    const nextY = positions[j+1] + spread;
-                    
+                    const nextX = this.points[j + 1].x;
+                    const nextY = positions[j + 1] + spread;
+
                     ctx.lineTo(nextX, nextY);
                 }
-                
+
                 ctx.strokeStyle = `hsla(${this.hue}, 70%, 60%, ${alpha})`;
                 ctx.lineWidth = settings.globalThickness * 1.2;
                 ctx.stroke();
@@ -396,7 +393,6 @@ class WaveLayer {
         }
 
         // Draw main wave with reduced resolution for thicker lines
-        ctx.globalCompositeOperation = settings.blendMode;
         ctx.beginPath();
         const step = settings.globalThickness > 3 ? 2 : 1; // Reduce resolution for thicker lines
         for (let i = 0; i < this.points.length - 1; i += step) {
