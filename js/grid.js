@@ -95,30 +95,32 @@ function createGrid() {
     gridPoints = [];
     gridLines = [];
 
-    const numCols = Math.floor(canvas.width / settings.gridSize) + 1;
-    const numRows = Math.floor(canvas.height / settings.gridSize) + 1;
+    const cols = Math.floor(canvas.width / settings.gridSize);
+    const rows = Math.floor(canvas.height / settings.gridSize);
+    const cellWidth = canvas.width / (cols - 1);
+    const cellHeight = canvas.height / (rows - 1);
 
     // Create grid points
-    for (let y = 0; y < numRows; y++) {
-        for (let x = 0; x < numCols; x++) {
-            gridPoints.push(new GridPoint(x * settings.gridSize, y * settings.gridSize));
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            gridPoints.push(new GridPoint(x * cellWidth, y * cellHeight));
         }
     }
 
     let lineIndex = 0;
     // Create horizontal lines
-    for (let y = 0; y < numRows; y++) {
-        for (let x = 0; x < numCols - 1; x++) {
-            const index = y * numCols + x;
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols - 1; x++) {
+            const index = y * cols + x;
             gridLines.push(new GridLine(gridPoints[index], gridPoints[index + 1], lineIndex++));
         }
     }
 
     // Create vertical lines
-    for (let x = 0; x < numCols; x++) {
-        for (let y = 0; y < numRows - 1; y++) {
-            const index = y * numCols + x;
-            gridLines.push(new GridLine(gridPoints[index], gridPoints[index + numCols], lineIndex++));
+    for (let x = 0; x < cols; x++) {
+        for (let y = 0; y < rows - 1; y++) {
+            const index = y * cols + x;
+            gridLines.push(new GridLine(gridPoints[index], gridPoints[index + cols], lineIndex++));
         }
     }
 }

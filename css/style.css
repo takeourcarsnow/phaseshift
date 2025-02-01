@@ -22,6 +22,7 @@ canvas {
     height: 100%;
     z-index: 10;
     display: flex;
+    pointer-events: none;
 }
 #controls {
     background: rgba(30, 30, 30, 0.9);
@@ -36,6 +37,7 @@ canvas {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    pointer-events: auto;
 }
 #controls.collapsed {
     transform: translateX(100%);
@@ -53,6 +55,7 @@ canvas {
     z-index: 11;
     font-size: 1.2em;
     transition: right 0.3s ease-in-out;
+    pointer-events: auto;
 }
 #controls.collapsed ~ #controls-toggle {
     right: -20px;

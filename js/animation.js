@@ -270,16 +270,15 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Update touch handlers with proper coordinate calculation
+// Simplify coordinate calculations
 function handleTouch(e) {
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    
     const touch = e.touches[0];
-    mouse.x = (touch.clientX - rect.left) * scaleX;
-    mouse.y = (touch.clientY - rect.top) * scaleY;
+    
+    // Use raw canvas-relative coordinates
+    mouse.x = touch.clientX - rect.left;
+    mouse.y = touch.clientY - rect.top;
 }
 
 function handleTouchEnd(e) {
@@ -292,11 +291,8 @@ function handleTouchEnd(e) {
 // Update mouse handlers to match touch coordinate calculation
 canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    
-    mouse.x = (e.clientX - rect.left) * scaleX;
-    mouse.y = (e.clientY - rect.top) * scaleY;
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
 });
 
 // Add explicit touch listeners with passive: false
@@ -315,7 +311,9 @@ canvas.addEventListener('touchmove', (e) => {
 canvas.removeEventListener('pointerdown', handleTouch);
 canvas.removeEventListener('pointermove', (e) => { /* ... */ });
 
+// Update resize handler for proper DPR handling
 function resizeCanvas() {
+    // Remove DPR scaling for now to restore functionality
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     createGrid();
