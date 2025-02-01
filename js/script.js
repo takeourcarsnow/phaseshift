@@ -525,17 +525,16 @@ window.addEventListener('resize', () => {
 window.dispatchEvent(new Event('resize'));
 
 function toggleMenu() {
-    menuOpen = !menuOpen;
-    document.querySelector('.menu').classList.toggle('active');
-    
-    // Check if orientation changed since last toggle
-    if (Math.abs(window.orientation - lastOrientation) === 90) {
-        handleResize();
-        lastOrientation = window.orientation;
-    }
+    const menu = document.getElementById('controls-container');
+    menu.classList.toggle('collapsed');
     
     // Force reflow to prevent rendering issues
-    void document.querySelector('.menu').offsetWidth;
+    void menu.offsetWidth;
+    
+    // Ensure canvas dimensions remain unchanged
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    createWaves();
 }
 
 window.addEventListener('keydown', function(event) {

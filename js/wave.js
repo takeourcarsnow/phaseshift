@@ -494,24 +494,12 @@ function drawWaves(time) {
 
 function handleResize() {
     setTimeout(() => {
-        // Handle device pixel ratio for crisp rendering
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = window.innerWidth * dpr;
-        canvas.height = window.innerHeight * dpr;
-        ctx.scale(dpr, dpr);
-        
-        // Force reflow to prevent rendering issues
-        void canvas.offsetWidth;
-        
+        // Always match canvas to viewport
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         createWaves();
     }, 100);
 }
-
-// Add this to prevent unwanted transformations
-window.addEventListener('resize', () => {
-    canvas.style.transform = 'none';
-    document.getElementById('controls-container').style.transform = 'none';
-});
 
 // Add orientationchange listener
 window.addEventListener('orientationchange', handleResize);
