@@ -275,10 +275,15 @@ class WaveLayer {
 
     createPoints() {
         const points = [];
-        const numPoints = Math.floor(canvas.width / settings.gridSize) + 1;
+        const length = Math.max(window.innerWidth, window.innerHeight) * 3;
+        const numPoints = Math.ceil(length / settings.gridSize) + 2;
+        const startX = -length/2;
+        
         for (let i = 0; i < numPoints; i++) {
-            const x = i * settings.gridSize;
-            points.push(new WavePoint(x, this.y, this.offset));
+            const x = startX + (i * (length / numPoints));
+            // Use the layer's Y position instead of viewport center
+            const y = this.y;
+            points.push(new WavePoint(x, y, this.offset));
         }
         return points;
     }
@@ -322,9 +327,12 @@ class WaveLayer {
 
     draw(time) {
         ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
+        // Center in viewport and rotate
+        ctx.translate(window.innerWidth/2, window.innerHeight/2);
         ctx.rotate((settings.waveRotation * Math.PI) / 180);
-        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+        
+        // Draw wave normally without scaling
+        ctx.translate(-window.innerWidth/2, -window.innerHeight/2);
 
         // Draw echo effect first
         if (settings.plexEffect) {
@@ -462,12 +470,8 @@ function createWaves() {
     const numLayers = settings.waveCount;
     const layerSpacing = settings.waveSpacing;
     
-    // Get actual visible area dimensions
-    const rect = canvas.getBoundingClientRect();
-    const visibleHeight = rect.height;
-    
-    // Calculate center based on visible area
-    const startY = (visibleHeight - (numLayers - 1) * layerSpacing) / 2 + rect.top;
+    // Calculate vertical positions with direct spacing
+    const startY = (window.innerHeight - (numLayers - 1) * layerSpacing) / 2;
     
     for (let i = 0; i < numLayers; i++) {
         const y = startY + (i * layerSpacing);
@@ -489,19 +493,11 @@ function drawWaves(time) {
 }
 
 function handleResize() {
-    // Add slight delay to ensure proper dimensions
     setTimeout(() => {
-        canvas.width = Math.min(window.innerWidth, 1920);
+        // Always match canvas to viewport
+        canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        
-        // If menu is closed, maintain aspect ratio
-        if (!menuOpen) {
-            const aspectRatio = 16 / 9;
-            canvas.width = Math.min(window.innerWidth, 1920);
-            canvas.height = canvas.width / aspectRatio;
-        }
-        
-        createWaves(); // Re-create waves after resize
+        createWaves();
     }, 100);
 }
 
