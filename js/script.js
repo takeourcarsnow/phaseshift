@@ -146,11 +146,6 @@ lineStyleInputs.forEach(input => {
     });
 });
 
-clearButton.addEventListener('click', () => {
-    createGrid();
-    createWaves();
-});
-
 // Radio button event listeners
 colorModeInputs.forEach(input => {
     input.addEventListener('change', (e) => {

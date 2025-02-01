@@ -87,11 +87,6 @@ lineStyleInputs.forEach(input => {
     });
 });
 
-clearButton.addEventListener('click', () => {
-    createGrid();
-    createWaves();
-});
-
 // Radio button event listeners
 colorModeInputs.forEach(input => {
     input.addEventListener('change', (e) => {
@@ -171,96 +166,76 @@ document.getElementById('turbulenceComplexity').addEventListener('input', (e) =>
     settings.turbulenceComplexity = parseFloat(e.target.value);
 });
 
-const randomButton = document.getElementById('randomButton');
-const defaultButton = document.getElementById('defaultButton');
-
-randomButton.addEventListener('click', () => {
-    settings.gridSize = Math.floor(Math.random() * 9) + 2; // Ensure gridSize is between 2 and 10
-    settings.waveCount = Math.floor(Math.random() * 49) + 1;
-    settings.waveAmplitude = Math.floor(Math.random() * 199) + 1;
-    settings.lineWidth = Math.floor(Math.random() * 4) + 1;
-    settings.elasticity = Math.random();
-    settings.friction = Math.max(settings.minFriction, Math.random());
-    settings.turbulence = Math.random() * 2;
-    settings.turbulenceSpeed = Math.random() * 3;
-    settings.turbulenceScale = Math.floor(Math.random() * 190) + 10;
-    settings.turbulenceComplexity = Math.floor(Math.random() * 4) + 1;
-    
-    const interactionModes = ['push', 'pull', 'both', 'gravity', 'unified'];
-    settings.interactionMode = interactionModes[Math.floor(Math.random() * interactionModes.length)];
-    
-    const colorModes = ['white', 'rainbow', 'velocity'];
-    settings.colorMode = colorModes[Math.floor(Math.random() * colorModes.length)];
-    
-    const waveShapes = ['sine', 'square', 'triangle'];
-    settings.waveShape = waveShapes[Math.floor(Math.random() * waveShapes.length)];
-    
-    // Ensure waves mode is always selected
-    settings.displayMode = 'waves';
-    
-    const lineStyles = ['solid', 'dashed', 'dotted'];
-    settings.lineStyle = lineStyles[Math.floor(Math.random() * lineStyles.length)];
-    
-    // Randomize turbulence settings
-    randomizeTurbulence();
-    
-    updateUI();
-    createGrid();
-    createWaves();
-});
-
-defaultButton.addEventListener('click', () => {
-    settings.gridSize = 3;
-    settings.waveCount = 5;
-    settings.waveAmplitude = 51;
-    settings.lineWidth = 3;
-    settings.elasticity = 0.3;
-    settings.friction = 0.20;
-    settings.positionSpring = 0.2;
-    settings.velocityDamping = 0.1;
-    settings.maxAcceleration = 8;
-    settings.colorMode = 'rainbow';
-    settings.interactionMode = 'push';
-    settings.turbulence = 0;
-    settings.turbulenceSpeed = 1;
-    settings.turbulenceScale = 50;
-    settings.turbulenceComplexity = 1;
-    settings.waveShape = 'sine';
-    settings.displayMode = 'waves';
-    settings.lineStyle = 'solid';
-    
-    updateUI();
-    createGrid();
-    createWaves();
-});
-
 function updateUI() {
+    // Update all input values and displays
     document.getElementById('gridSizeValue').textContent = settings.gridSize;
     document.getElementById('gridSize').value = settings.gridSize;
+    
     document.getElementById('waveCountValue').textContent = settings.waveCount;
     document.getElementById('waveCount').value = settings.waveCount;
+    
     document.getElementById('waveAmplitudeValue').textContent = settings.waveAmplitude;
     document.getElementById('waveAmplitude').value = settings.waveAmplitude;
+    
     document.getElementById('lineWidthValue').textContent = settings.lineWidth;
     document.getElementById('lineWidth').value = settings.lineWidth;
+    
     document.getElementById('elasticityValue').textContent = settings.elasticity.toFixed(2);
     document.getElementById('elasticity').value = settings.elasticity;
+    
     document.getElementById('frictionValue').textContent = settings.friction.toFixed(2);
     document.getElementById('friction').value = settings.friction;
+    
     document.getElementById('turbulenceValue').textContent = settings.turbulence.toFixed(1);
     document.getElementById('turbulence').value = settings.turbulence;
+    
     document.getElementById('turbulenceSpeedValue').textContent = settings.turbulenceSpeed.toFixed(1);
     document.getElementById('turbulenceSpeed').value = settings.turbulenceSpeed;
+    
     document.getElementById('turbulenceScaleValue').textContent = settings.turbulenceScale;
     document.getElementById('turbulenceScale').value = settings.turbulenceScale;
+    
     document.getElementById('turbulenceComplexityValue').textContent = settings.turbulenceComplexity;
     document.getElementById('turbulenceComplexity').value = settings.turbulenceComplexity;
     
-    document.querySelector(`input[name="interactionMode"][value="${settings.interactionMode}"]`).checked = true;
-    document.querySelector(`input[name="colorMode"][value="${settings.colorMode}"]`).checked = true;
-    document.querySelector(`input[name="waveShape"][value="${settings.waveShape}"]`).checked = true;
-    document.querySelector(`input[name="displayMode"][value="${settings.displayMode}"]`).checked = true;
-    document.querySelector(`input[name="lineStyle"][value="${settings.lineStyle}"]`).checked = true;
+    document.getElementById('globalThicknessValue').textContent = settings.globalThickness;
+    document.getElementById('globalThickness').value = settings.globalThickness;
+    
+    // Update radio buttons
+    const interactionModeRadio = document.querySelector(`input[name="interactionMode"][value="${settings.interactionMode}"]`);
+    if (interactionModeRadio) interactionModeRadio.checked = true;
+    
+    const colorModeRadio = document.querySelector(`input[name="colorMode"][value="${settings.colorMode}"]`);
+    if (colorModeRadio) colorModeRadio.checked = true;
+    
+    const waveShapeRadio = document.querySelector(`input[name="waveShape"][value="${settings.waveShape}"]`);
+    if (waveShapeRadio) waveShapeRadio.checked = true;
+    
+    const displayModeRadio = document.querySelector(`input[name="displayMode"][value="${settings.displayMode}"]`);
+    if (displayModeRadio) displayModeRadio.checked = true;
+    
+    const lineStyleRadio = document.querySelector(`input[name="lineStyle"][value="${settings.lineStyle}"]`);
+    if (lineStyleRadio) lineStyleRadio.checked = true;
+    
+    const turbulenceTypeRadio = document.querySelector(`input[name="turbulenceType"][value="${settings.turbulenceType}"]`);
+    if (turbulenceTypeRadio) turbulenceTypeRadio.checked = true;
+    
+    // Update blend mode
+    if (blendModeSelect) {
+        blendModeSelect.value = settings.blendMode;
+    }
+    
+    // Update plex and glow effects
+    document.getElementById('plexEffect').checked = settings.plexEffect;
+    document.getElementById('plexIntensityValue').textContent = settings.plexIntensity;
+    document.getElementById('plexIntensity').value = settings.plexIntensity;
+    
+    document.getElementById('glowEffect').checked = settings.glowEffect;
+    document.getElementById('glowIntensityValue').textContent = settings.glowIntensity;
+    document.getElementById('glowIntensity').value = settings.glowIntensity;
+    
+    document.getElementById('plexTrailDurationValue').textContent = settings.plexTrailDuration;
+    document.getElementById('plexTrailDuration').value = settings.plexTrailDuration;
 }
 
 function animate() {
