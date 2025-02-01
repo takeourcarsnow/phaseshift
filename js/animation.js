@@ -140,15 +140,12 @@ waveSpacingInput.addEventListener('input', (e) => {
     document.getElementById('waveSpacingValue').textContent = Math.round(scaledValue);
     settings.waveSpacing = Math.round(scaledValue);
     
-    // Smooth transition by updating existing waves
-    createWaves(); // Now uses the updated logic that modifies existing layers
-    
-    // Force gradual position updates instead of instant recreation
-    waveLayers.forEach(layer => {
-        layer.points.forEach(point => {
-            point.vy *= 0.9; // Dampen existing velocity
-        });
-    });
+    // Instead of recreate, update existing waves
+    if (waveLayers.length === settings.waveCount) {
+        createWaves(); // This will now update positions
+    } else {
+        createWaves(); // Full recreate only if count changed
+    }
 });
 
 // Replace the existing dropdown event listener
