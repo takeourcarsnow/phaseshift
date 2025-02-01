@@ -8,7 +8,12 @@ body, html {
     font-family: sans-serif;
 }
 canvas {
-    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    touch-action: none;
 }
 #controls-container {
     position: absolute;
@@ -244,4 +249,9 @@ canvas {
     canvas {
         height: 90vh !important;
     }
+}
+
+/* Add active state for mobile taps */
+canvas:active {
+    cursor: pointer;
 } 

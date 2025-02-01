@@ -270,29 +270,16 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-canvas.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-});
-
-canvas.addEventListener('mouseleave', () => {
-    mouse.x = -1000;
-    mouse.y = -1000;
-    mouse.smoothX = -1000;
-    mouse.smoothY = -1000;
-});
-
-// Touch support
-canvas.addEventListener('touchstart', handleTouch);
-canvas.addEventListener('touchmove', handleTouch);
-canvas.addEventListener('touchend', handleTouchEnd);
-canvas.addEventListener('touchcancel', handleTouchEnd);
-
+// Update touch handlers with proper coordinate calculation
 function handleTouch(e) {
-    e.preventDefault(); // Prevent scrolling
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
     const touch = e.touches[0];
-    mouse.x = touch.clientX;
-    mouse.y = touch.clientY;
+    mouse.x = (touch.clientX - rect.left) * scaleX;
+    mouse.y = (touch.clientY - rect.top) * scaleY;
 }
 
 function handleTouchEnd(e) {
@@ -301,6 +288,32 @@ function handleTouchEnd(e) {
     mouse.smoothX = -1000;
     mouse.smoothY = -1000;
 }
+
+// Update mouse handlers to match touch coordinate calculation
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    mouse.x = (e.clientX - rect.left) * scaleX;
+    mouse.y = (e.clientY - rect.top) * scaleY;
+});
+
+// Add explicit touch listeners with passive: false
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    handleTouch(e);
+    canvas.focus(); // Ensure canvas receives focus
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    handleTouch(e);
+}, { passive: false });
+
+// Remove pointer events to avoid conflicts
+canvas.removeEventListener('pointerdown', handleTouch);
+canvas.removeEventListener('pointermove', (e) => { /* ... */ });
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -568,4 +581,7 @@ const throttledRedraw = throttle(() => {
 }, 100);
 
 document.getElementById('controls').addEventListener('input', inputHandler);
-document.getElementById('controls').addEventListener('change', inputHandler); 
+document.getElementById('controls').addEventListener('change', inputHandler);
+
+// Add touch-action CSS property to prevent default behaviors
+canvas.style.touchAction = 'none'; 
