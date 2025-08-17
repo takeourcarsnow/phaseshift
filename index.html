@@ -28,11 +28,22 @@
     position: fixed; inset: 0;
     display: grid;
     grid-template-columns: clamp(260px, 28vw, 420px) 1fr;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    min-width: 0;
   }
   @media (max-width: 900px) {
     .app { grid-template-columns: 1fr; }
     aside { position: fixed; left: 0; right: 0; bottom: 0; top: auto; max-height: 70vh; z-index: 10; border-right: none; border-top: 1px solid var(--panel-border); border-radius: 16px 16px 0 0; }
     .panel.collapsed { height: 46px; overflow: hidden; }
+  }
+  main {
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    min-width: 0;
+    overflow: hidden;
   }
   canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 
@@ -94,6 +105,18 @@
   @media (max-width: 520px) {
     .group { grid-template-columns: 1fr; }
     .value { display: none; }
+    .app, main {
+      height: 100vh;
+      min-height: 100vh;
+      width: 100vw;
+      min-width: 0;
+    }
+    canvas {
+      height: 100vh !important;
+      min-height: 100vh;
+      width: 100vw !important;
+      min-width: 0;
+    }
   }
 </style>
 </head>
