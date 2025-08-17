@@ -131,6 +131,7 @@
           <span class="chip" id="ctxChip" aria-live="polite">OK</span>
           <div class="spacer"></div>
           <button class="btn" id="pauseBtn">Pause</button>
+          <button class="btn" id="fullscreenBtn">Fullscreen</button>
           <button class="btn" id="togglePanel">Menu</button>
         </div>
 
@@ -1136,49 +1137,26 @@
     applyContextLimits();
   }
 
-  // ---------- Hotkeys and system behaviors ----------
-  function exportPNG() {
-    canvas.toBlob(blob => {
-      if (!blob) return;
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'wave.png';
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    }, 'image/png');
+  // ---------- Fullscreen helpers ----------
+  function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+  function requestFullscreen(elem) {
+    if (elem.requestFullscreen) return elem.requestFullscreen();
+    if (elem.webkitRequestFullscreen) return elem.webkitRequestFullscreen();
+    if (elem.msRequestFullscreen) return elem.msRequestFullscreen();
+  }
+  function exitFullscreen() {
+    if (document.exitFullscreen) return document.exitFullscreen();
+    if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+    if (document.msExitFullscreen) return document.msExitFullscreen();
   }
 
-  document.addEventListener('keydown', (e) => {
-    const tag = document.activeElement?.tagName;
-    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
-    switch (e.key.toLowerCase()) {
-      case ' ': e.preventDefault(); byId('pauseBtn').click(); break;
-      case 'm': byId('togglePanel').click(); break;
-      case 'r': byId('randomize').click(); break;
-      case 'c': byId('resetCam').click(); break;
-      case 's': exportPNG(); break;
-    }
-  });
-
-  // Respect reduced motion
-  if (settings.system.reduceMotion) {
-    settings.wave.speed *= 0.6;
-    settings.system.autoDetail = true;
+  function updateFullscreenBtn() {
+    const btn = byId('fullscreenBtn');
+    if (!btn) return;
+    btn.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
   }
-
-  // Page visibility pause/resume
-  let pausedByVisibility = false;
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      pausedByVisibility = !settings.system.paused;
-      settings.system.paused = true;
-      byId('pauseBtn').textContent = 'Resume';
-    } else if (pausedByVisibility) {
-      settings.system.paused = false;
-      byId('pauseBtn').textContent = 'Pause';
-      pausedByVisibility = false;
-    }
-  });
 
   // ---------- UI init/sync ----------
   function initUI() {
@@ -1247,6 +1225,17 @@
     };
     byId('randomize').onclick = randomize;
     byId('resetCam').onclick = () => { pointer.x = W*0.5; pointer.y = H*0.5; pointer.sx = pointer.x; pointer.sy = pointer.y; };
+    byId('fullscreenBtn').onclick = () => {
+      if (!isFullscreen()) {
+        // Try to fullscreen the app container for best effect
+        requestFullscreen(document.documentElement);
+      } else {
+        exitFullscreen();
+      }
+    };
+    document.addEventListener('fullscreenchange', updateFullscreenBtn);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenBtn);
+    updateFullscreenBtn();
 
     initPresetsUI();
     syncControls();
@@ -1355,6 +1344,14 @@
 </script>
 </body>
 </html>
-
-
-
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(canvas);
+    last = performance.now();
+    applyContextLimits();
+    requestAnimationFrame(loop);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
